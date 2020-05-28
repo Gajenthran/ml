@@ -9,22 +9,24 @@
 #include "parser.h"
 #include "config.h"
 
+/** \brief Structure représentant les voisins pour le kNN */
 typedef struct neighbors neighbors_t;
 struct neighbors {
-  int index;
-  float act;
-  char * label;
+  int index;    // index dans la bdd
+  float act;    // état d'activation (distance)
+  char * label; // label
 };
 
+/** \brief Structure représentant le modèle kNN */
 typedef struct knn knn_t;
 struct knn {
-  data_t * train;
-  neighbors_t * neighbors;
-  int nb_neighbors;
+  data_t * train;          // données d'apprentissage
+  neighbors_t * neighbors; // voisins du kNN
+  int nb_neighbors;        // nombre de voisins
 };
 
-knn_t * init_knn(config_t *);
-void    training(knn_t *, data_t *, config_t *);
-double  euclidean_dist(double *, double *, int);
-data_t * predict(knn_t * knn, data_t * test, config_t * cfg);
+knn_t *  init_knn(config_t *);
+data_t * predict(knn_t *, data_t *, config_t *);
+double   predict_score(data_t *, data_t *, config_t *);
+
 #endif

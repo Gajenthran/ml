@@ -11,7 +11,7 @@ CP = rsync -R
 DEBUG ?= 0
 TEST = $(shell n=0; while [[ $n -lt 1000 ]]; do ./ann iris.data; n=$((n+1)); done)
 
-CFLAGS = -Wall
+CFLAGS = -Wall -O3
 
 PROGNAME = knn
 FILENAME = iris.data
@@ -52,8 +52,8 @@ doc: $(DOXYFILE)
 	cd documentation && doxygen && cd ..
 
 test:
-	for number in {1..1000} ; do \
-	    ./som $(FILENAME) ; \
+	for number in {1..100000} ; do \
+	    ./knn $(FILENAME) ; \
 	done
 
 clean:

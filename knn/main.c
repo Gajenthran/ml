@@ -20,8 +20,7 @@ int main(int argc, char *argv[]) {
   if(argc != 2)
     usage("Usage: ./knn <file>.");
 
-  config_t * cfg = NULL;
-  cfg = init_config(CONFIG_FILE);
+  config_t * cfg = init_config(CONFIG_FILE);
 
   data_t * data = NULL, 
          * test = NULL,
@@ -30,14 +29,15 @@ int main(int argc, char *argv[]) {
   data = read_file(argv[1], cfg);
   normalize(data, cfg);
 
-  int * sh = init_shuffle(cfg->data_sz);
-  test = test_split(data, cfg, sh);
-  train = train_split(data, cfg, sh);
+  const int * sh = init_shuffle(cfg->data_sz);
+  test = test_split(data, sh, cfg);
+  train = train_split(data, sh, cfg);
 
   knn_t * knn = NULL;
   knn = init_knn(cfg);
-  knn->train = train_split(data, cfg, sh);
+  knn->train = train_split(data, sh, cfg);
   data_t * predicted = predict(knn, test, cfg);
+  printf("predict score: %.2f\n", predict_score(data, predicted, cfg));
 
 #ifdef DEBUG
   print_config(cfg);

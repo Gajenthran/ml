@@ -13,10 +13,9 @@
 #include <time.h>
 #include "parser.h"
 
-
 /** \brief Lire le fichiers de données, tokenizer son
  * contenu où chaque valeur est séparée par une virgule
- * placer les éléments dans la struct data_t
+ * placer les éléments dans la struct data_t.
  *
  * \param filename nom du fichier
  * \param cfg      données de configuration
@@ -66,7 +65,7 @@ data_t * read_file(char * filename, config_t * cfg) {
   return data;
 }
 
-/** \brief Normalise les données
+/** \brief Normalise les données.
  *
  * \param data ensemble de données
  * \param cfg  données de configuration
@@ -85,10 +84,21 @@ void normalize(data_t * data, config_t * cfg) {
   }
 }
 
-data_t * train_split(data_t * data, config_t * cfg, int * sh) {
-  int i, d;
-  int test_size = (int)(cfg->data_sz * cfg->test_size),
+/** \brief Couper l'ensemble des données pour former les données
+ * d'apprentissage.
+ *
+ * \param data ensemble de données
+ * \param sh vecteur représentant l'ordre de passage des données
+ * \param cfg données de configuration
+ *
+ * \return la structure de forme data_t qui représente
+ * les données d'apprentissage
+ */
+data_t * train_split(data_t * data, const int * sh, config_t * cfg) {
+  int i, d,
+      test_size = (int)(cfg->data_sz * cfg->test_size),
       train_size = cfg->data_sz - test_size;
+
   data_t * train = (data_t *)malloc(train_size * sizeof(*train));
   assert(train);
 
@@ -103,7 +113,17 @@ data_t * train_split(data_t * data, config_t * cfg, int * sh) {
   return train;
 }
 
-data_t * test_split(data_t * data, config_t * cfg, int * sh) {
+/** \brief Couper l'ensemble des données pour former les données
+ * tests.
+ *
+ * \param data ensemble de données
+ * \param sh vecteur représentant l'ordre de passage des données
+ * \param cfg données de configuration
+ *
+ * \return la structure de forme data_t qui représente
+ * les données tests
+ */
+data_t * test_split(data_t * data, const int * sh, config_t * cfg) {
   int i, d;
   int test_size = (int)(cfg->data_sz * cfg->test_size);
   data_t * test = (data_t *)malloc(test_size * sizeof(*test));
@@ -122,7 +142,7 @@ data_t * test_split(data_t * data, config_t * cfg, int * sh) {
 }
 
 /** \brief Initialise le vecteur représentant l'ordre
- * de passage des données lors de la phase d'apprentissage
+ * de passage des données lors de la phase d'apprentissage.
  *
  * \param size nombre de données
  *
@@ -217,8 +237,7 @@ config_t * init_config(char * filename) {
 
 /** \brief Libère les données de la bd.
  *
- * \param filename données de la bd
- * config_t
+ * \param data ensemble de données
  */
 void free_data(data_t * data) {
   if(data) {
@@ -227,6 +246,7 @@ void free_data(data_t * data) {
   }
 }
 
+#ifdef DEBUG
 void print_data(data_t * data, config_t * cfg) {
   int i, j;
   for(i = 0; i < cfg->data_sz; i++) {
@@ -237,7 +257,6 @@ void print_data(data_t * data, config_t * cfg) {
   }
 }
 
-#ifdef DEBUG
 void print_config(config_t * cfg) {
   printf("nb_val:  %d\n", cfg->nb_val);
   printf("data_sz: %d\n", cfg->data_sz);

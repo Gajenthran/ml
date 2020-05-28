@@ -12,7 +12,7 @@
 typedef struct data data_t;
 struct data {
   double * v;   // vecteur de données
-  int index;
+  int index;    // index dans la bdd
   char * label; // étiquette
   double norm;  // norme
 };
@@ -20,17 +20,16 @@ struct data {
 data_t *   read_file(char *, config_t *);
 void       normalize(data_t *, config_t *);
 config_t * init_config(char *);
-int *      init_shuffle(int size);
-void       train_test_split(data_t *, data_t *, data_t *, config_t *);
-void    print_train_test(data_t *, data_t *, config_t *);
-void       shuffle(int * sh, int size);
+int *      init_shuffle(int);
+void       shuffle(int *, int);
+data_t *   test_split(data_t *, const int *, config_t *);
+data_t *   train_split(data_t *, const int *, config_t *);
 void       free_config(config_t *);
-void       free_data(data_t * data);
-data_t * test_split(data_t * data, config_t * cfg, int * sh);
-data_t * train_split(data_t * data, config_t * cfg, int * sh);
+void       free_data(data_t *);
 
 #ifdef DEBUG
 void       print_data(data_t *, config_t *);
 void       print_config(config_t *);
 #endif
+
 #endif
