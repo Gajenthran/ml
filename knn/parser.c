@@ -85,34 +85,41 @@ void normalize(data_t * data, config_t * cfg) {
   }
 }
 
-void train_test_split(
-  data_t * data, data_t * train, data_t * test, config_t * cfg) {
-  int i, j, d;
-  int test_size = (int)(cfg->data_sz * cfg->test_size);
-  train = (data_t *)malloc((cfg->data_sz - test_size) * sizeof(*train));
+data_t * train_split(data_t * data, config_t * cfg, int * sh) {
+  int i, d;
+  int test_size = (int)(cfg->data_sz * cfg->test_size),
+      train_size = cfg->data_sz - test_size;
+  data_t * train = (data_t *)malloc(train_size * sizeof(*train));
   assert(train);
 
-  test = (data_t *)malloc(test_size * sizeof(*test));
-  assert(test);
-
-  int * sh = init_shuffle(cfg->data_sz);
-
-  for(i = 0; i < test_size; i++) {
-    test[i].norm = data[sh[i]].norm;
-    test[i].v = (double *)malloc(cfg->nb_val * sizeof(*test[i].v));
-    for(d = 0; d < cfg->nb_val; d++)
-      test[i].v[d] = data[sh[i]].v[d];
-  }
-
-  for(i = 0; i < cfg->data_sz - test_size; i++) {
-    train[i].norm = data[sh[i + test_size]].norm;
+  for(i = 0; i < train_size; i++) {
     train[i].label = strdup(data[sh[i + test_size]].label);
     train[i].v = (double *)malloc(cfg->nb_val * sizeof(*train[i].v));
+    assert(train[i].v);
     for(d = 0; d < cfg->nb_val; d++)
       train[i].v[d] = data[sh[i + test_size]].v[d];
   }
+
+  return train;
 }
 
+data_t * test_split(data_t * data, config_t * cfg, int * sh) {
+  int i, d;
+  int test_size = (int)(cfg->data_sz * cfg->test_size);
+  data_t * test = (data_t *)malloc(test_size * sizeof(*test));
+  assert(test);
+
+  for(i = 0; i < test_size; i++) {
+    test[i].index = sh[i];
+    test[i].v = (double *)malloc(cfg->nb_val * sizeof(*test[i].v));
+    assert(test[i].v);
+    for(d = 0; d < cfg->nb_val; d++) {
+      test[i].v[d] = data[sh[i]].v[d];
+    }
+  }
+
+  return test;
+}
 
 /** \brief Initialise le vecteur représentant l'ordre
  * de passage des données lors de la phase d'apprentissage
@@ -194,6 +201,9 @@ config_t * init_config(char * filename) {
         } else if(!strcmp(tok, "TEST_SIZE")) {
           tok = strtok(NULL, "=");
           cfg->test_size = strtod(tok, &end);
+        } else if(!strcmp(tok, "NB_NEIGHBORS")) {
+          tok = strtok(NULL, "=");
+          cfg->nb_neighbors = atoi(tok);
         } else {
           fprintf( stderr, "Error while reading file %s\n", filename);
           exit(1);
@@ -217,7 +227,6 @@ void free_data(data_t * data) {
   }
 }
 
-#ifdef DEBUG
 void print_data(data_t * data, config_t * cfg) {
   int i, j;
   for(i = 0; i < cfg->data_sz; i++) {
@@ -228,6 +237,7 @@ void print_data(data_t * data, config_t * cfg) {
   }
 }
 
+#ifdef DEBUG
 void print_config(config_t * cfg) {
   printf("nb_val:  %d\n", cfg->nb_val);
   printf("data_sz: %d\n", cfg->data_sz);

@@ -1,7 +1,7 @@
 /*!
- * \file ann.c
+ * \file main.c
  * \brief Fichier principale concernant 
- * l'application de SOM
+ * l'application de kNN
  * \author PANCHALINGAMOORTHY Gajenthran
  */
 #include <assert.h>
@@ -21,17 +21,23 @@ int main(int argc, char *argv[]) {
     usage("Usage: ./knn <file>.");
 
   config_t * cfg = NULL;
-  data_t * data = NULL;
-  data_t * train = NULL;
-  data_t * test = NULL;
-  // knn_t * knn = NULL;
-
   cfg = init_config(CONFIG_FILE);
+
+  data_t * data = NULL, 
+         * test = NULL,
+         * train = NULL;
+
   data = read_file(argv[1], cfg);
   normalize(data, cfg);
 
-  train_test_split(data, train, test, cfg);
-  // knn = init_knn(data, cfg);
+  int * sh = init_shuffle(cfg->data_sz);
+  test = test_split(data, cfg, sh);
+  train = train_split(data, cfg, sh);
+
+  knn_t * knn = NULL;
+  knn = init_knn(cfg);
+  knn->train = train_split(data, cfg, sh);
+  data_t * predicted = predict(knn, test, cfg);
 
 #ifdef DEBUG
   print_config(cfg);

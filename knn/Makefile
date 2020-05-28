@@ -11,7 +11,7 @@ CP = rsync -R
 DEBUG ?= 0
 TEST = $(shell n=0; while [[ $n -lt 1000 ]]; do ./ann iris.data; n=$((n+1)); done)
 
-CFLAGS = -Wall -O3
+CFLAGS = -Wall
 
 PROGNAME = knn
 FILENAME = iris.data

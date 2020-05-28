@@ -16,6 +16,7 @@ struct config {
   int nb_val;     // nombre de valeurs dans les données
   int data_sz;    // nombre de données
   int nb_label;   // nombre de labels
+  int nb_neighbors;
   float test_size;  // proportion des données pour le test
 };
 
