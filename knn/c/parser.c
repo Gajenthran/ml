@@ -18,7 +18,7 @@
  * placer les éléments dans la struct data_t.
  *
  * \param filename nom du fichier
- * \param cfg      données de configuration
+ * \param cfg données de configuration
  *
  * \return la structure de forme data_t qui représente
  * les données formalisées
@@ -182,7 +182,7 @@ void shuffle(int * sh, int size) {
  * configuration
  *
  * \param filename fichier de configuration
- * \return return la structure de configuration
+ * \return la structure de configuration
  * config_t
  */
 config_t * init_config(char * filename) {
