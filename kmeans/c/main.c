@@ -29,16 +29,7 @@ int main(int argc, char *argv[]) {
 
   kmeans_t * kmeans = init_kmeans(data, cfg);
   cluster(kmeans, data, cfg);
-  /* const int * sh = init_shuffle(cfg->data_sz);
-  test = test_split(data, sh, cfg);
-  train = train_split(data, sh, cfg); */
-
-
-  /* knn_t * knn = NULL;
-  knn = init_knn(cfg);
-  knn->train = train_split(data, sh, cfg);
-  data_t * predicted = predict(knn, test, cfg);
-  printf("predict score: %.2f\n", predict_score(data, predicted, cfg)); */
+  print_cluster(kmeans, cfg);
 
 #ifdef DEBUG
   print_config(cfg);
