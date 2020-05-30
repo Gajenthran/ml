@@ -152,25 +152,6 @@ void free_data(data_t * data) {
   }
 }
 
-
-/** \brief Mélange le vecteur représentant l'ordre de passage des données
- * lors de la phase d'apprentissage
- *
- * \param sh   vecteur représentant l'ordre de passage des données
- * \param size taille du vecteur
- */
-void shuffle(int * sh, int size) {
-  int i, r;
-  for(i = 0; i < size; i++) {
-    r = rand() % size;
-    if(sh[i] != sh[r]) {
-      sh[i] ^= sh[r];
-      sh[r] ^= sh[i];
-      sh[i] ^= sh[r];
-    }
-  }
-}
-
 #ifdef DEBUG
 void print_data(data_t * data, config_t * cfg) {
   int i, j;

@@ -20,8 +20,6 @@ struct data {
 data_t *   read_file(char *, config_t *);
 void       normalize(data_t *, config_t *);
 config_t * init_config(char *);
-data_t *   test_split(data_t *, const int *, config_t *);
-data_t *   train_split(data_t *, const int *, config_t *);
 void       free_config(config_t *);
 void       free_data(data_t *);
 

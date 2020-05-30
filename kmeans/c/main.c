@@ -1,7 +1,7 @@
 /*!
  * \file main.c
  * \brief Fichier principale concernant 
- * l'application de kNN
+ * l'application de KMeans
  * \author PANCHALINGAMOORTHY Gajenthran
  */
 #include <assert.h>
@@ -22,14 +22,12 @@ int main(int argc, char *argv[]) {
 
   config_t * cfg = init_config(CONFIG_FILE);
 
-  data_t * data = NULL;
-
-  data = read_file(argv[1], cfg);
+  data_t * data = read_file(argv[1], cfg);
   // normalize(data, cfg);
 
   kmeans_t * kmeans = init_kmeans(data, cfg);
   cluster(kmeans, data, cfg);
-  print_cluster(kmeans, cfg);
+  print_cluster(kmeans, data, cfg);
 
 #ifdef DEBUG
   print_config(cfg);
