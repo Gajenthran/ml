@@ -9,7 +9,7 @@ def argument_parser(test_size=0.2, n_clusters=3):
     Parser les arguments de la ligne de commande
     pour choisir les différents paramètres. 
     :param test_size: part des données tests
-    :param threshold: seuil pour CM
+    :param n_clusters: nombre de clusters pour KMeans
   """
 
   parser = argparse.ArgumentParser()

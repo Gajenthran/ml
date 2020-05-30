@@ -13,13 +13,13 @@ TEST = $(shell n=0; while [[ $n -lt 1000 ]]; do ./ann iris.data; n=$((n+1)); don
 
 CFLAGS = -Wall -O3
 
-PROGNAME = knn
+PROGNAME = kmeans
 FILENAME = iris.data
-CONFIGF = knn.cfg
+CONFIGF = kmeans.cfg
 README = README.md
 distdir = $(PROGNAME)
-HEADERS = parser.h config.h knn.h
-SOURCES = main.c parser.c knn.c
+HEADERS = parser.h config.h kmeans.h
+SOURCES = main.c parser.c kmeans.c
 OBJ = $(SOURCES:.c=.o)
 
 DOXYFILE = documentation/Doxyfile

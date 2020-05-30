@@ -84,100 +84,6 @@ void normalize(data_t * data, config_t * cfg) {
   }
 }
 
-/** \brief Couper l'ensemble des données pour former les données
- * d'apprentissage.
- *
- * \param data ensemble de données
- * \param sh vecteur représentant l'ordre de passage des données
- * \param cfg données de configuration
- *
- * \return la structure de forme data_t qui représente
- * les données d'apprentissage
- */
-data_t * train_split(data_t * data, const int * sh, config_t * cfg) {
-  int i, d,
-      test_size = (int)(cfg->data_sz * cfg->test_size),
-      train_size = cfg->data_sz - test_size;
-
-  data_t * train = (data_t *)malloc(train_size * sizeof(*train));
-  assert(train);
-
-  for(i = 0; i < train_size; i++) {
-    train[i].label = strdup(data[sh[i + test_size]].label);
-    train[i].v = (double *)malloc(cfg->nb_val * sizeof(*train[i].v));
-    assert(train[i].v);
-    for(d = 0; d < cfg->nb_val; d++)
-      train[i].v[d] = data[sh[i + test_size]].v[d];
-  }
-
-  return train;
-}
-
-/** \brief Couper l'ensemble des données pour former les données
- * tests.
- *
- * \param data ensemble de données
- * \param sh vecteur représentant l'ordre de passage des données
- * \param cfg données de configuration
- *
- * \return la structure de forme data_t qui représente
- * les données tests
- */
-data_t * test_split(data_t * data, const int * sh, config_t * cfg) {
-  int i, d;
-  int test_size = (int)(cfg->data_sz * cfg->test_size);
-  data_t * test = (data_t *)malloc(test_size * sizeof(*test));
-  assert(test);
-
-  for(i = 0; i < test_size; i++) {
-    test[i].index = sh[i];
-    test[i].v = (double *)malloc(cfg->nb_val * sizeof(*test[i].v));
-    assert(test[i].v);
-    for(d = 0; d < cfg->nb_val; d++) {
-      test[i].v[d] = data[sh[i]].v[d];
-    }
-  }
-
-  return test;
-}
-
-/** \brief Initialise le vecteur représentant l'ordre
- * de passage des données lors de la phase d'apprentissage.
- *
- * \param size nombre de données
- *
- * \return vecteur représentant l'ordre de passage des données.
- */
-int * init_shuffle(int size) {
-  srand(time(NULL));
-  int i;
-  int * sh = (int *)malloc(size * sizeof(*sh));
-  assert(sh);
-
-  for(i = 0; i < size; i++)
-    sh[i] = i;
-  shuffle(sh, size);
-  return sh;
-}
-
-/** \brief Mélange le vecteur représentant l'ordre de passage des données
- * lors de la phase d'apprentissage
- *
- * \param sh   vecteur représentant l'ordre de passage des données
- * \param size taille du vecteur
- */
-void shuffle(int * sh, int size) {
-  int i, r;
-  for(i = 0; i < size; i++) {
-    r = rand() % size;
-    if(sh[i] != sh[r]) {
-      sh[i] ^= sh[r];
-      sh[r] ^= sh[i];
-      sh[i] ^= sh[r];
-    }
-  }
-}
-
 /** \brief Initialise les données de
  * configuration
  *
@@ -193,7 +99,7 @@ config_t * init_config(char * filename) {
     exit(1);
   }
 
-  char * buf = (char *)malloc(MAX * sizeof(*buf)), * tok, * end;
+  char * buf = (char *)malloc(MAX * sizeof(*buf)), * tok; /* * end; */
   assert(buf);
   config_t * cfg = (config_t *)malloc(sizeof *cfg);
   assert(cfg);
@@ -218,12 +124,12 @@ config_t * init_config(char * filename) {
         } else if(!strcmp(tok, "NB_LABEL")) {
           tok = strtok(NULL, "=");
           cfg->nb_label = atoi(tok);
-        } else if(!strcmp(tok, "TEST_SIZE")) {
+        } else if(!strcmp(tok, "N_CLUSTERS")) {
           tok = strtok(NULL, "=");
-          cfg->test_size = strtod(tok, &end);
-        } else if(!strcmp(tok, "NB_NEIGHBORS")) {
+          cfg->n_clusters = atoi(tok);
+        } else if(!strcmp(tok, "N_ITERS")) {
           tok = strtok(NULL, "=");
-          cfg->nb_neighbors = atoi(tok);
+          cfg->n_iters = atoi(tok);
         } else {
           fprintf( stderr, "Error while reading file %s\n", filename);
           exit(1);
@@ -246,6 +152,25 @@ void free_data(data_t * data) {
   }
 }
 
+
+/** \brief Mélange le vecteur représentant l'ordre de passage des données
+ * lors de la phase d'apprentissage
+ *
+ * \param sh   vecteur représentant l'ordre de passage des données
+ * \param size taille du vecteur
+ */
+void shuffle(int * sh, int size) {
+  int i, r;
+  for(i = 0; i < size; i++) {
+    r = rand() % size;
+    if(sh[i] != sh[r]) {
+      sh[i] ^= sh[r];
+      sh[r] ^= sh[i];
+      sh[i] ^= sh[r];
+    }
+  }
+}
+
 #ifdef DEBUG
 void print_data(data_t * data, config_t * cfg) {
   int i, j;
@@ -258,8 +183,10 @@ void print_data(data_t * data, config_t * cfg) {
 }
 
 void print_config(config_t * cfg) {
-  printf("nb_val:  %d\n", cfg->nb_val);
-  printf("data_sz: %d\n", cfg->data_sz);
-  printf("n_label: %d\n", cfg->nb_label);
+  printf("nb_val:   %d\n", cfg->nb_val);
+  printf("data_sz:  %d\n", cfg->data_sz);
+  printf("n_label:  %d\n", cfg->nb_label);
+  printf("n_iters:  %d\n", cfg->n_iters);
+  printf("clusters: %d\n", cfg->n_clusters);
 }
 #endif

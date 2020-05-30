@@ -1,0 +1,10 @@
+# for MacOS user
+.DS_Store
+
+# fichier objet en C
+*.o
+
+# exec
+som
+knn
+kmeans
