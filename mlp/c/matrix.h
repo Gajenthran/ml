@@ -1,0 +1,28 @@
+/*!
+ * \file kmeans.h
+ * \brief Fichier header de kmeans.c
+ * \author PANCHALINGAMOORTHY Gajenthran
+ */
+#ifndef _MATRIX_H_
+#define _MATRIX_H_
+
+#include "parser.h"
+#include "config.h"
+
+/* Structure représentant un point dans KMeans */
+typedef struct matrix matrix_t;
+struct matrix {
+  int rows, cols;
+  double ** data;
+};
+
+matrix_t * mat_init(int, int);
+void       mat_sum(matrix_t *, matrix_t *);
+matrix_t * mat_mul(matrix_t *, matrix_t *);
+matrix_t * mat_transpose(matrix_t *);
+void       mat_sigmoid(matrix_t * a);
+void       mat_free(matrix_t *);
+void       mat_print(matrix_t *);
+matrix_t * array_to_mat(double *, int);
+
+#endif
