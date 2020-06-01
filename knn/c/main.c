@@ -24,7 +24,8 @@ int main(int argc, char *argv[]) {
 
   data_t * data = NULL, 
          * test = NULL,
-         * train = NULL;
+         * train = NULL,
+         * predicted = NULL;
 
   data = read_file(argv[1], cfg);
   // normalize(data, cfg);
@@ -36,8 +37,12 @@ int main(int argc, char *argv[]) {
   knn_t * knn = NULL;
   knn = init_knn(cfg);
   knn->train = train_split(data, sh, cfg);
-  data_t * predicted = predict(knn, test, cfg);
+  predicted = predict(knn, test, cfg);
   printf("predict score: %.2f\n", predict_score(data, predicted, cfg));
+
+  free_config(cfg);
+  free_data(data, train, test);
+  free_knn(knn);
 
 #ifdef DEBUG
   print_config(cfg);

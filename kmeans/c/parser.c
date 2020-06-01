@@ -141,6 +141,17 @@ config_t * init_config(char * filename) {
   return cfg;
 }
 
+/** \brief Libère les données de configuration.
+ *
+ * \param cfg données de configuration
+ */
+void free_config(config_t * cfg) {
+  if(cfg) {
+    free(cfg);
+    cfg = NULL;
+  }
+}
+
 /** \brief Libère les données de la bd.
  *
  * \param data ensemble de données

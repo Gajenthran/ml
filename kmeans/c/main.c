@@ -29,6 +29,10 @@ int main(int argc, char *argv[]) {
   cluster(kmeans, data, cfg);
   print_cluster(kmeans, data, cfg);
 
+  free_config(cfg);
+  free_data(data);
+  free_kmeans(kmeans);
+
 #ifdef DEBUG
   print_config(cfg);
   print_data(data, cfg);

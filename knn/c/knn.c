@@ -192,3 +192,14 @@ double predict_score(data_t * data, data_t * test, config_t * cfg) {
 
   return rate / test_size;
 }
+
+/** \brief Libère le modèle kNN.
+ *
+ * \param knn modèle kNN
+ */
+void free_knn(knn_t * knn) {
+  if(knn) {
+    free(knn);
+    knn = NULL;
+  }
+}

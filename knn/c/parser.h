@@ -25,7 +25,7 @@ void       shuffle(int *, int);
 data_t *   test_split(data_t *, const int *, config_t *);
 data_t *   train_split(data_t *, const int *, config_t *);
 void       free_config(config_t *);
-void       free_data(data_t *);
+void       free_data(data_t *, data_t *, data_t *);
 
 #ifdef DEBUG
 void       print_data(data_t *, config_t *);

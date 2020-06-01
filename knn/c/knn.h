@@ -28,5 +28,6 @@ struct knn {
 knn_t *  init_knn(config_t *);
 data_t * predict(knn_t *, data_t *, config_t *);
 double   predict_score(data_t *, data_t *, config_t *);
+void     free_knn(knn_t *);
 
 #endif

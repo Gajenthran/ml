@@ -235,15 +235,28 @@ config_t * init_config(char * filename) {
   return cfg;
 }
 
+/** \brief Libère les données de configurations
+ *
+ * \param cfg données de configuration
+ */
+void free_config(config_t * cfg) {
+  if(cfg) {
+    free(cfg);
+    cfg = NULL;
+  }
+}
+
 /** \brief Libère les données de la bd.
  *
  * \param data ensemble de données
+ * \param train ensemble de données d'apprentissage
+ * \param test ensemble de données tests
+ * \param pred ensemble de données de prédiction
  */
-void free_data(data_t * data) {
-  if(data) {
-    free(data);
-    data = NULL;
-  }
+void free_data(data_t * data, data_t * train, data_t * test) {
+  if(data)  { free(data);  data = NULL;  }
+  if(train) { free(train); train = NULL; }
+  if(test)  { free(test);  test = NULL;  }
 }
 
 #ifdef DEBUG
