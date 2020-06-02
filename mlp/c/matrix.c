@@ -14,6 +14,7 @@
 #include "matrix.h"
 
 #define SIGMOID(x) (1 / (1 + (exp(-(x)))))
+#define DSIGMOID(y) ((y) * (1 - (y)))
 
 matrix_t * mat_init(int rows, int cols) {
   srand(time(NULL));
@@ -57,6 +58,26 @@ void mat_sum(matrix_t * a, matrix_t * b) {
       a->data[r][c] += b->data[r][c];
 }
 
+matrix_t * mat_sub(matrix_t * a, short target) {
+  matrix_t * res = mat_init(a->rows, a->cols);
+  int r, c, val;
+  for(r = 0; r < a->rows; r++) {
+    val = target == val;
+    for(c = 0; c < a->cols; c++) {
+      res->data[r][c] = a->data[r][c] - val;
+    }
+  }
+  return res;
+}
+
+
+void mat_mul_hadamard(matrix_t * a, matrix_t * b) {
+  int r, c;
+  for(r = 0; r < a->rows; r++)
+    for(c = 0; c < a->cols; c++)
+      a->data[r][c] = b->data[r][c];
+}
+
 matrix_t * mat_mul(matrix_t * a, matrix_t * b) {
   if(a->cols != b->rows) {
     fprintf(stderr, "Error: matrix mult.\n");
@@ -65,18 +86,25 @@ matrix_t * mat_mul(matrix_t * a, matrix_t * b) {
 
   matrix_t * res = mat_init(a->rows, b->cols);
 
-  int i, j, k;
+  int r, c, k;
   double sum;
-  for(i = 0; i < a->rows; i++) {
-    for(j = 0; j < b->cols; j++) {
+  for(r = 0; r < a->rows; r++) {
+    for(c = 0; c < b->cols; c++) {
       sum = 0.0;
       for(k = 0; k < a->cols; k++) {
-        sum += a->data[i][k] * b->data[k][j];
+        sum += a->data[r][k] * b->data[k][c];
       }
-      res->data[i][j] = sum;
+      res->data[r][c] = sum;
     }
   }
   return res;
+}
+
+void mat_mul_scalar(matrix_t * a, double val) {
+  int r, c;
+  for(r = 0; r < a->rows; r++)
+    for(c = 0; c < a->cols; c++)
+      a->data[r][c] *= val;
 }
 
 matrix_t * mat_transpose(matrix_t * a) {
@@ -92,20 +120,34 @@ matrix_t * mat_transpose(matrix_t * a) {
 
 void mat_sigmoid(matrix_t * a) {
   int r, c;
+  for(r = 0; r < a->rows; r++) {
+    for(c = 0; c < a->cols; c++) {
+      a->data[r][c] = SIGMOID(a->data[r][c]);
+    }
+  }
+}
+
+matrix_t * mat_dsigmoid(matrix_t * a) {
+  int r, c;
+  matrix_t * res = mat_init(a->rows, a->cols);
+
   for(r = 0; r < a->rows; r++)
     for(c = 0; c < a->cols; c++)
-      a->data[r][c] = SIGMOID(a->data[r][c]);
+      res->data[r][c] = DSIGMOID(a->data[r][c]);
+
+  return res;
 }
 
 void mat_print(matrix_t * mat) {
   int r, c;
+  printf("rows: %d, cols:%d\n", mat->rows, mat->cols);
   for(r = 0; r < mat->rows; r++) {
-    printf("| ");
+    printf("|  ");
     for(c = 0; c < mat->cols; c++)
-      printf("%.2f ", mat->data[r][c]);
+      printf("%.3f \t", mat->data[r][c]);
     printf("|\n");
   }
-  printf("\n");
+  printf("\n\n");
 }
 
 void mat_free(matrix_t * mat) {

@@ -14,7 +14,7 @@ struct data {
   double * v;   // vecteur de données
   int index;    // index dans la bdd
   char * label; // étiquette
-  short * target;
+  short target; // étiquette sous la forme de int
   double norm;  // norme
 };
 

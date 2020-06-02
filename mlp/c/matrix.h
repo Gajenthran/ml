@@ -18,9 +18,13 @@ struct matrix {
 
 matrix_t * mat_init(int, int);
 void       mat_sum(matrix_t *, matrix_t *);
+matrix_t * mat_sub(matrix_t *, short);
 matrix_t * mat_mul(matrix_t *, matrix_t *);
+void       mat_mul_hadamard(matrix_t *, matrix_t *);
+void       mat_mul_scalar(matrix_t *, double);
 matrix_t * mat_transpose(matrix_t *);
-void       mat_sigmoid(matrix_t * a);
+void       mat_sigmoid(matrix_t *);
+matrix_t * mat_dsigmoid(matrix_t *);
 void       mat_free(matrix_t *);
 void       mat_print(matrix_t *);
 matrix_t * array_to_mat(double *, int);

@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
 
   mlp_t * mlp = init_mlp(cfg);
   train(mlp, train_set, cfg);
+  // test(mlp, data, test_set, cfg);
 
 
 #ifdef DEBUG

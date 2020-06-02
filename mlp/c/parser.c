@@ -18,7 +18,6 @@
            (unsigned char) *(b)) : \
             strcmp((a), (b)))
 
-
 /** \brief Lire le fichiers de données, tokenizer son
  * contenu où chaque valeur est séparée par une virgule
  * placer les éléments dans la struct data_t.
@@ -180,6 +179,13 @@ data_t * train_split(data_t * data, const int * sh, config_t * cfg) {
 
   for(i = 0; i < train_size; i++) {
     train[i].label = strdup(data[sh[i + test_size]].label);
+    if(!strcmp(data[sh[i + test_size]].label, "Iris-setosa")) {
+      train[i].target = 0;
+    } else if(!strcmp(data[sh[i + test_size]].label, "Iris-versicolor")) {
+      train[i].target = 1;
+    } else {
+      train[i].target = 2;
+    }
     train[i].v = (double *)malloc(cfg->n_val * sizeof(*train[i].v));
     assert(train[i].v);
     for(d = 0; d < cfg->n_val; d++)
