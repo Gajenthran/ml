@@ -10,18 +10,12 @@
 #include "config.h"
 #include "matrix.h"
 
-typedef struct layer layer_t;
-struct layer {
-  matrix_t * in;
-  matrix_t * h;
-  matrix_t * out;
-};
-
 typedef struct mlp mlp_t;
 struct mlp {
-  layer_t * layers;
   matrix_t ** w;
-  matrix_t ** bias;
+  matrix_t ** act;
+  matrix_t ** derivates;
+  int * layers;
   double alpha;
   short n_layers;
   short n_hidden_layers;
@@ -32,7 +26,7 @@ struct mlp {
 
 mlp_t * init_mlp(config_t *);
 void    train(mlp_t *, data_t *, config_t *);
-void test(mlp_t *, data_t *, data_t *, config_t *);
+// void    test(mlp_t *, data_t *, data_t *, config_t *);
 
 
 #endif
