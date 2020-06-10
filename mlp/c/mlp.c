@@ -62,6 +62,38 @@ static matrix_t ** init_weights(mlp_t * mlp, config_t * cfg) {
   return w;
 }
 
+static matrix_t * forward_propagate(mlp_t * mlp, data_t data) {
+  matrix_t * act = array_to_mat(data.v, mlp->input_sz);
+  mlp->act[0] = act;
+
+  int i;
+  for(i = 0; i < mlp->n_layers - 1; i++) {
+    act = mat_dot(act, mlp->w[i]);
+    mat_sigmoid(act);
+    mlp->act[i + 1] = act;
+  }
+
+  return mlp->act[i];
+}
+
+static void back_propagate(mlp_t * mlp, matrix_t * loss) {
+  matrix_t * delta = NULL;
+  int i;
+  for(i = mlp->n_layers - 2; i >= 0; i--) {
+    delta = mat_mul(loss, mat_dsigmoid(mlp->act[i + 1]));
+    mlp->derivates[i] = mat_dot(mat_reshape_col(mlp->act[i]), delta);
+    loss = mat_dot(delta, mat_transpose(mlp->w[i]));
+  }
+}
+
+static void gradient_descent(mlp_t * mlp) {
+  int i;
+  for(i = 0; i < mlp->n_layers - 1; i++) {
+    mat_mul_scalar(mlp->derivates[i], mlp->alpha);
+    mat_sum(mlp->w[i], mlp->derivates[i]);
+  }
+}
+
 mlp_t * init_mlp(config_t * cfg) {
   mlp_t * mlp = (mlp_t *)malloc(sizeof(*mlp));
   assert(mlp);
@@ -81,41 +113,6 @@ mlp_t * init_mlp(config_t * cfg) {
   return mlp;
 }
 
-static matrix_t * forward_propagate(mlp_t * mlp, data_t data) {
-  matrix_t * act = array_to_mat(data.v, mlp->input_sz);
-  mlp->act[0] = act;
-
-  int i;
-  for(i = 0; i < mlp->n_layers - 1; i++) {
-    act = mat_dot(act, mlp->w[i]);
-    mat_sigmoid(act);
-    mlp->act[i + 1] = act;
-  }
-
-  return mlp->act[i];
-}
-
-static void back_propagate(mlp_t * mlp, matrix_t * loss) {
-  matrix_t * delta = NULL;
-  int i;
-  for(i = mlp->n_layers - 2; i >= 0; i--) {
-    mat_dsigmoid(mlp->act[i + 1]);
-    delta = mat_mul(loss, mlp->act[i + 1]);
-
-    mlp->derivates[i] = mat_dot(mat_reshape_col(mlp->act[i]), delta);
-
-    loss = mat_dot(delta, mat_transpose(mlp->w[i]));
-  }
-}
-
-static void gradient_descent(mlp_t * mlp) {
-  int i;
-  for(i = 0; i < mlp->n_layers - 1; i++) {
-    mat_mul_scalar(mlp->derivates[i], mlp->alpha);
-    mat_sum(mlp->w[i], mlp->derivates[i]);
-  }
-}
-
 void train(mlp_t * mlp, data_t * train_set, config_t * cfg) {
   int i, it, 
       train_sz = cfg->data_sz - (int)(cfg->data_sz * cfg->test_size);
@@ -132,8 +129,11 @@ void train(mlp_t * mlp, data_t * train_set, config_t * cfg) {
   }
 }
 
-/* void test(mlp_t * mlp, data_t * data, data_t * test_set, config_t * cfg) {
-  feed_forward(mlp, test_set[0]);
-  printf("%s\n", data[test_set[0].index].label);
-  mat_print(mlp->layers->out);
-} */
+void test(mlp_t * mlp, data_t * data, data_t * test_set, config_t * cfg) {
+  int i;
+  for(i = 0; i < (int)(cfg->data_sz * cfg->test_size); i++) {
+    printf("%.1f,%.1f,%.1f,%.1f, %s\n", test_set[i].v[0], test_set[i].v[1], test_set[i].v[2], test_set[i].v[3],
+      data[test_set[i].index].label);
+    mat_print(forward_propagate(mlp, test_set[i]));
+  }
+}

@@ -26,7 +26,7 @@ struct mlp {
 
 mlp_t * init_mlp(config_t *);
 void    train(mlp_t *, data_t *, config_t *);
-// void    test(mlp_t *, data_t *, data_t *, config_t *);
+void    test(mlp_t *, data_t *, data_t *, config_t *);
 
 
 #endif

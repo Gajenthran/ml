@@ -52,7 +52,7 @@ matrix_t * mat_init(int rows, int cols) {
     assert(mat->data[r]);
 
     for(c = 0; c < cols; c++) {
-      mat->data[r][c] = ((float)rand()/(float)(RAND_MAX)) * 2 - 1;
+      mat->data[r][c] = ((float)rand()/(float)(RAND_MAX));
     }
   }
   mat->rows = rows;
@@ -85,7 +85,7 @@ matrix_t * mat_sub(matrix_t * a, short target) {
   for(r = 0; r < a->rows; r++) {
     for(c = 0; c < a->cols; c++) {
       res->data[r][c] = c == target ? 
-        res->data[r][c] - 1 : res->data[r][c] - 0;
+        1 - res->data[r][c] : 0 - res->data[r][c];
     }
   }
 
