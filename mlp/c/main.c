@@ -1,12 +1,13 @@
 /*!
  * \file main.c
  * \brief Fichier principale concernant 
- * l'application de KMeans
+ * l'application de MLP.
  * \author PANCHALINGAMOORTHY Gajenthran
  */
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "parser.h"
 #include "config.h"
 #include "mlp.h"
@@ -17,6 +18,8 @@ void usage(char * exec) {
 }
 
 int main(int argc, char *argv[]) {
+  srand(time(NULL));
+
   if(argc != 2)
     usage(argv[0]);
 
@@ -35,7 +38,9 @@ int main(int argc, char *argv[]) {
 
   mlp_t * mlp = init_mlp(cfg);
   train(mlp, train_set, cfg);
-  test(mlp, data, test_set, cfg);
+  predict(mlp, data, test_set, cfg);
+
+  printf("MSE for MLP model: %.2f\n", mse(mlp, data, test_set, cfg));
 
 #ifdef DEBUG
   print_config(cfg);

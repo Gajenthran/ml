@@ -63,6 +63,13 @@ data_t * read_file(char * filename, config_t * cfg) {
       tok = strtok(NULL, ",");
     }
     label = strtok(label, "\n");
+    if(!strcmp(label, "Iris-setosa")) {
+      data[line].target = 0;
+    } else if(!strcmp(label, "Iris-versicolor")) {
+      data[line].target = 1;
+    } else {
+      data[line].target = 2;
+    }
     data[line++].label = strdup(label);
   }
 
@@ -158,7 +165,6 @@ config_t * init_config(char * filename) {
   return cfg;
 }
 
-
 /** \brief Couper l'ensemble des données pour former les données
  * d'apprentissage.
  *
@@ -179,17 +185,11 @@ data_t * train_split(data_t * data, const int * sh, config_t * cfg) {
 
   for(i = 0; i < train_size; i++) {
     train[i].label = strdup(data[sh[i + test_size]].label);
-    if(!strcmp(data[sh[i + test_size]].label, "Iris-setosa")) {
-      train[i].target = 0;
-    } else if(!strcmp(data[sh[i + test_size]].label, "Iris-versicolor")) {
-      train[i].target = 1;
-    } else {
-      train[i].target = 2;
-    }
     train[i].v = (double *)malloc(cfg->n_val * sizeof(*train[i].v));
     assert(train[i].v);
     for(d = 0; d < cfg->n_val; d++)
       train[i].v[d] = data[sh[i + test_size]].v[d];
+    train[i].target = data[sh[i + test_size]].target;
   }
 
   return train;
@@ -222,7 +222,6 @@ data_t * test_split(data_t * data, const int * sh, config_t * cfg) {
 
   return test;
 }
-
 
 /** \brief Mélange le vecteur représentant l'ordre de passage des données
  * lors de la phase d'apprentissage
