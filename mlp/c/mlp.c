@@ -237,3 +237,14 @@ double mse(mlp_t * mlp, data_t * data, data_t * test, config_t * cfg) {
 
   return pow(errors, 2.0) / test_sz;
 }
+
+/** \brief Libère la mémoire de la structure MLP.
+ *
+ * \param mlp structure de MLP
+ */
+void free_mlp(mlp_t * mlp) {
+  if(mlp) {
+    free(mlp);
+    mlp = NULL;
+  }
+}

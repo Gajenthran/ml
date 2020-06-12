@@ -53,7 +53,7 @@ doc: $(DOXYFILE)
 
 test:
 	for number in {1..100000} ; do \
-	    ./knn $(FILENAME) ; \
+	    ./mlp $(FILENAME) ; \
 	done
 
 clean:

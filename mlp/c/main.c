@@ -49,6 +49,7 @@ int main(int argc, char *argv[]) {
   
   free_config(cfg);
   free_data(data, train_set, test_set);
+  free_mlp(mlp);
 
   return 0;
 }
